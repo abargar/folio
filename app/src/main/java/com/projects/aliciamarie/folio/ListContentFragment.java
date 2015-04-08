@@ -27,14 +27,16 @@ public class ListContentFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContentList = getArguments().getParcelableArrayList(ViewContentActivity.DATAPIECES);
-        mContentListAdapter = new DatapieceAdapter(getActivity(), mContentList);
-        this.setListAdapter(mContentListAdapter);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_listcontent, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_listcontent, container, false);
+        mContentList = getArguments().getParcelableArrayList(ViewContentActivity.DATAPIECES);
+        mContentListAdapter = new DatapieceAdapter(getActivity(), mContentList);
+        this.setListAdapter(mContentListAdapter);
+
+        return rootView;
     }
 
     @Override
@@ -55,8 +57,6 @@ public class ListContentFragment extends ListFragment {
             mContentListAdapter = new DatapieceAdapter(getActivity(), mContentList);
             this.setListAdapter(mContentListAdapter);
         }
-        else {
-            mContentListAdapter.notifyDataSetChanged();
-        }
+        mContentListAdapter.notifyDataSetChanged();
     }
 }

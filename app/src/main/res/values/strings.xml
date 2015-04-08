@@ -1,4 +1,5 @@
 <resources>
+    <!--Capture Activity/Front page-->
     <string name="app_name">Folio</string>
     <string name="welcome">Welcome to your Folio!</string>
     <string name="action_settings">Settings</string>
@@ -6,13 +7,22 @@
     <string name="action_camera">Camera</string>
     <string name="action_video">Video</string>
     <string name="action_audio">Audio</string>
-    <string name="action_view">View</string>
+
+    <!--Detail Activity-->
     <string name="edittext_add_tag">Add tag/ID</string>
     <string name="action_add_tag">Add Tag</string>
     <string name="action_delete_tag">X</string>
-    <string name="action_save_content">Save</string>
     <string name="textview_capture_location_default">Location: Unknown</string>
     <string name="textview_capture_location_accuracy_default">Accuracy:  Unknown</string>
+    <string name="action_save_content">Save</string>
+    <string name="action_delete_content">Delete</string>
+    <string name="delete_file_dialog">Delete file from device?</string>
+    <string name="yes_delete_file_dialog">Yes</string>
+    <string name="no_delete_file_dialog">No</string>
+
+
+    <!--View Activity-->
+    <string name="action_view">View</string>
     <string name="edittext_search">Search Terms...</string>
     <string name="action_search">Go</string>
     <string name="textview_orderby">Order by:</string>

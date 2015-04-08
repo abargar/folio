@@ -67,9 +67,9 @@ public class DatapieceAdapter extends BaseAdapter {
         Datapiece datapiece = datapieces.get(position);
         if(datapiece != null) {
             Uri datapieceUri = datapiece.getUri();
-            holder.icon.setImageBitmap(FileLoader.getThumbnail(mContext, datapieceUri));
+            holder.icon.setImageBitmap(FileHandler.getThumbnail(mContext, datapieceUri));
             holder.tags.setText(datapiece.getTags().toString());
-            holder.type.setText(FileLoader.getType(datapieceUri));
+            holder.type.setText(FileHandler.getType(datapieceUri));
             Timestamp datapieceTime = new Timestamp(datapiece.getTime());
             holder.time.setText(datapieceTime.toString());
         }

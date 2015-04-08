@@ -14,4 +14,11 @@
         android:text="@string/action_save_content"
         android:onClick="saveContent"
         />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/action_delete_content"
+        android:text="@string/action_delete_content"
+        android:onClick="deleteContent"
+        />
 </LinearLayout>

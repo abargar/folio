@@ -1,5 +1,7 @@
 package com.projects.aliciamarie.folio;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.view.View;
 
 import com.projects.aliciamarie.folio.data.DatabaseUtilities;
 import com.projects.aliciamarie.folio.data.Datapiece;
+import com.projects.aliciamarie.folio.utility.FileHandler;
 import com.projects.aliciamarie.folio.utility.LocationProvider;
 
 import java.util.HashSet;
@@ -45,7 +48,7 @@ public class DetailActivity extends ActionBarActivity implements LocationProvide
         Bundle bundle = new Bundle();
         bundle.putParcelable(DATAPIECE, mDatapiece);
         detailFragment = createDetailFragment(bundle);
-        setContentView(R.layout.activity_addcontent);
+        setContentView(R.layout.activity_detail);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.content_container, detailFragment)
@@ -146,6 +149,31 @@ public class DetailActivity extends ActionBarActivity implements LocationProvide
                 DatabaseUtilities.saveDatapieceTag(this, datapieceId, tag);
         }
         viewContent();
+    }
+
+    public void deleteContent(View view){
+        long datapieceId = DatabaseUtilities.getDatapieceId(this, mDatapiece);
+        if(datapieceId != -1){
+            DatabaseUtilities.deleteDatapiece(this, datapieceId);
+        }
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage(R.string.delete_file_dialog)
+                    .setPositiveButton(R.string.yes_delete_file_dialog, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Log.v(LOG_TAG, "Yes delete file");
+                    FileHandler.deleteFile(getApplicationContext(), mDatapiece.getUri());
+                    viewContent();
+                }
+            })
+                    .setNegativeButton(R.string.no_delete_file_dialog, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Log.v(LOG_TAG, "No keep file");
+                            viewContent();
+                        }
+                    });
+           alertDialogBuilder.create();
+            alertDialogBuilder.show();
     }
 
     private void viewContent(){

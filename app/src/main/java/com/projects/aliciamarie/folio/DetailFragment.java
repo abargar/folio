@@ -16,7 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.projects.aliciamarie.folio.data.Datapiece;
-import com.projects.aliciamarie.folio.utility.FileLoader;
+import com.projects.aliciamarie.folio.utility.FileHandler;
 import com.projects.aliciamarie.folio.utility.TagAdapter;
 
 import java.sql.Timestamp;
@@ -53,7 +53,7 @@ public class DetailFragment extends Fragment{
         Uri uri = datapiece.getUri();
         if(uri != null) {
             ImageView imageView = (ImageView) rootView.findViewById(R.id.imageview_capture);
-            Bitmap preview = FileLoader.getThumbnail(getActivity(), uri);
+            Bitmap preview = FileHandler.getThumbnail(getActivity(), uri);
             imageView.setImageBitmap(preview);
         }
         Location location = datapiece.getLocation();

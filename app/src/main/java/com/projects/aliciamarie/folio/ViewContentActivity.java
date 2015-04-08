@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.projects.aliciamarie.folio.data.DataContract;
 import com.projects.aliciamarie.folio.data.DatabaseUtilities;
 import com.projects.aliciamarie.folio.data.Datapiece;
 
@@ -24,14 +23,14 @@ public class ViewContentActivity extends ActionBarActivity {
     private static final String LOG_TAG = ViewContentActivity.class.getSimpleName();
     protected static final String DATAPIECES = "datapieces";
     protected ArrayList<Datapiece> mDatapieces;
-    protected boolean showNewest = true;
+    protected String order = "ASC";
     protected ListContentFragment listFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState == null) {
-            mDatapieces = DatabaseUtilities.getDatapiecesByTime(this, "DESC", null, null);
+            mDatapieces = DatabaseUtilities.getDatapieces(this, null, null, "DESC");
         }
         else{
             mDatapieces = savedInstanceState.getParcelableArrayList(DATAPIECES);
@@ -94,26 +93,37 @@ public class ViewContentActivity extends ActionBarActivity {
             Log.v(LOG_TAG, "Search box not found");
         }
         else {
-            String[] searchTerm = { searchBox.getText().toString() };
-            mDatapieces = DatabaseUtilities.getDatapiecesByTag(this, "ASC", DataContract.SpecimenDatapiecePairing.COLUMN_SPECIMEN_ID + " LIKE ? ", searchTerm);
+            String searchTerm = searchBox.getText().toString();
+            if(searchTerm.equals("")){
+                mDatapieces = DatabaseUtilities.getDatapieces(this, null, null, order);
+            }
+            else{
+                Log.v(LOG_TAG, "Search term:" + searchTerm);
+                mDatapieces = DatabaseUtilities.getDatapiecesByTag(this, searchTerm);
+            }
             listFragment.updateList(mDatapieces);
         }
     }
 
     public void orderBySpecimen(View view){
-        Log.v(LOG_TAG, "Order by specimen called!");
-        mDatapieces = DatabaseUtilities.getDatapiecesByTime(this,"DESC", null, null);
+        if(order == "ASC"){
+            order = "DESC";
+        }
+        else{
+            order = "ASC";
+        }
+        mDatapieces = DatabaseUtilities.getDatapieces(this, null, null, order);
+        listFragment.updateList(mDatapieces);
     }
 
     public void orderByTime(View view){
-        if(showNewest){
-            showNewest = false;
-            mDatapieces = DatabaseUtilities.getDatapiecesByTime(this,"ASC", null, null);
+        if(order == "ASC"){
+            order = "DESC";
         }
         else{
-            showNewest = true;
-            mDatapieces = DatabaseUtilities.getDatapiecesByTime(this,"DESC", null, null);
+            order = "ASC";
         }
+        mDatapieces = DatabaseUtilities.getDatapieces(this, null, null, order);
         listFragment.updateList(mDatapieces);
     }
 

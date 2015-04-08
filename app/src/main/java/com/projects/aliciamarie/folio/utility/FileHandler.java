@@ -1,6 +1,7 @@
 package com.projects.aliciamarie.folio.utility;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -15,8 +16,8 @@ import java.util.Date;
 /**
  * Created by Alicia Marie on 3/27/2015.
  */
-public class FileLoader {
-    private static final String LOG_TAG = FileLoader.class.getSimpleName();
+public class FileHandler {
+    private static final String LOG_TAG = FileHandler.class.getSimpleName();
 
     private static String APP_DIRECTORY = "folio";
     public static final String TYPE_IMAGE = "IMAGE";
@@ -62,6 +63,14 @@ public class FileLoader {
                 break;
         }
         return file;
+    }
+
+    public static Boolean deleteFile(Context context, Uri content){
+        String contentPath = content.getPath();
+        File file = new File(contentPath);
+        Boolean deleted = file.delete();
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(contentPath))));
+        return deleted;
     }
 
     public static Bitmap getThumbnail(Context context, Uri content){

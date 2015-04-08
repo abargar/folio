@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.projects.aliciamarie.folio.data.Datapiece;
-import com.projects.aliciamarie.folio.utility.FileLoader;
+import com.projects.aliciamarie.folio.utility.FileHandler;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         if (intent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = FileLoader.createFile(FileLoader.TYPE_IMAGE);
+            File photoFile = FileHandler.createFile(FileHandler.TYPE_IMAGE);
             if(photoFile != null) {
                 mCurrentFileUri = Uri.fromFile(photoFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, mCurrentFileUri);
@@ -82,7 +82,7 @@ public class MainActivity extends ActionBarActivity {
     public void takeVideo(View view){
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
-            File videoFile = FileLoader.createFile(FileLoader.TYPE_VIDEO);
+            File videoFile = FileHandler.createFile(FileHandler.TYPE_VIDEO);
             if(videoFile != null) {
                 mCurrentFileUri = Uri.fromFile(videoFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, mCurrentFileUri);

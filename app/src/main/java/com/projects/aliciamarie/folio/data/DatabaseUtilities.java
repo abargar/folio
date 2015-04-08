@@ -71,17 +71,8 @@ public class DatabaseUtilities {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        long existingId = getDatapieceId(context, datapiece);
-        long rowId;
-
-        if(existingId == -1) {
-            ContentValues datapieceValues = createDatapieceValues(datapiece);
-            rowId = db.insert(DataContract.DatapieceEntry.TABLE_NAME, null, datapieceValues);
-        }
-        else{
-            Log.v(LOG_TAG, "Content values already exist in database.");
-            return existingId;
-        }
+        ContentValues datapieceValues = createDatapieceValues(datapiece);
+        long rowId = db.insert(DataContract.DatapieceEntry.TABLE_NAME, null, datapieceValues);
 
         if(rowId == -1) {
             Log.e(LOG_TAG, "Error: content values were not successfully saved in database");
@@ -141,8 +132,23 @@ public class DatabaseUtilities {
         return datapiece;
     }
 
+    public static void deleteDatapiece(Context context, long datapieceId){
+        ArrayList<String> tags = getTags(context, datapieceId);
+        for(String tag: tags){
+            deleteDatapieceTag(context, datapieceId, tag);
+        }
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String[] idArg = {Long.toString(datapieceId)};
+        int result = db.delete(DataContract.DatapieceEntry.TABLE_NAME, DataContract.DatapieceEntry._ID + " = ?", idArg);
+        if(result != 1){
+            Log.e(LOG_TAG, "Error deleting datapiece from the database.");
+        }
+        db.close();
 
-        public static ArrayList<Datapiece> getDatapiecesByTime(Context context, @Nullable String order, @Nullable String selection, @Nullable String[] args){
+    }
+
+    public static ArrayList<Datapiece> getDatapieces(Context context, @Nullable String selection, @Nullable String[] args, @Nullable String order){
         ArrayList<Datapiece> entries = new ArrayList<>();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -266,7 +272,7 @@ public class DatabaseUtilities {
                 + DataContract.SpecimenDatapiecePairing.COLUMN_SPECIMEN_ID + " = ?";
         String[] selectionArgs = { String.valueOf(datapieceId), String.valueOf(tag) };
 
-        Cursor c = db.query(
+        Cursor cursor = db.query(
                 DataContract.SpecimenDatapiecePairing.TABLE_NAME,
                 tagProjection,
                 selection,
@@ -275,18 +281,18 @@ public class DatabaseUtilities {
                 null,
                 null
         );
-        Log.v(LOG_TAG, "Number of returned rows for tag " + tag + ": " + c.getCount());
+        Log.v(LOG_TAG, "Number of returned rows for tag " + tag + ": " + cursor.getCount());
 
         long tagId;
-        if(c.moveToFirst()){
+        if(cursor.moveToFirst()){
 
-            tagId = c.getLong(c.getColumnIndexOrThrow(idCol));
+            tagId = cursor.getLong(cursor.getColumnIndexOrThrow(idCol));
         }
         else{
             tagId = -1;
         }
         db.close();
-        c.close();
+        cursor.close();
         return tagId;
     }
 
@@ -302,7 +308,36 @@ public class DatabaseUtilities {
         db.close();
     }
 
-    public static void getDatapiecesByTag(Context context, String tag){
-        
+    public static ArrayList<Datapiece> getDatapiecesByTag(Context context, String tag){
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ArrayList<Datapiece> datapieces = new ArrayList();
+
+        String datapieceCol = DataContract.SpecimenDatapiecePairing.COLUMN_DATAPIECE_ID;
+        String[] projection = { datapieceCol };
+        String selection = DataContract.SpecimenDatapiecePairing.COLUMN_SPECIMEN_ID + " LIKE ?";
+        String[] args = { tag + "%" };
+        Cursor cursor = db.query(
+                DataContract.SpecimenDatapiecePairing.TABLE_NAME,
+                projection,
+                selection,
+                args,
+                null,
+                null,
+                null
+        );
+
+        if(cursor.moveToFirst()){
+            do{
+               Long datapieceId = cursor.getLong(cursor.getColumnIndexOrThrow(datapieceCol));
+               Datapiece datapiece = getDatapiece(context, datapieceId);
+                datapiece.setTags(getTags(context, datapieceId));
+                datapieces.add(datapiece);
+            }
+            while(cursor.moveToNext());
+        }
+        db.close();
+        cursor.close();
+        return datapieces;
     }
 }
