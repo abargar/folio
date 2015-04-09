@@ -17,18 +17,6 @@
         android:text="@string/action_search"
         android:onClick="search"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id="@+id/viewoptions_textview_orderby"
-        android:text="@string/textview_orderby"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id="@+id/viewoptions_button_orderby_specimen"
-        android:text="@string/action_orderby_specimen"
-        android:onClick="orderBySpecimen"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

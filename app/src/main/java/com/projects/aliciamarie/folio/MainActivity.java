@@ -1,44 +1,68 @@
 package com.projects.aliciamarie.folio;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.EditText;
 
+import com.projects.aliciamarie.folio.data.DatabaseUtilities;
 import com.projects.aliciamarie.folio.data.Datapiece;
-import com.projects.aliciamarie.folio.utility.FileHandler;
 
-import java.io.File;
 import java.util.ArrayList;
 
-
+/**
+ * Created by Alicia Marie on 3/24/2015.
+ */
 public class MainActivity extends ActionBarActivity {
 
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final int REQUEST_VIDEO_CAPTURE = 2;
-    Uri mCurrentFileUri;
-    private static String LOG_TAG = MainActivity.class.getSimpleName();
 
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    protected static final String DATAPIECES = "datapieces";
+    protected ArrayList<Datapiece> mDatapieces;
+    protected String order = "ASC";
+    protected ListContentFragment listFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_capture);
+        if(savedInstanceState == null) {
+            mDatapieces = DatabaseUtilities.getDatapieces(this, null, null, "DESC");
+        }
+        else{
+            mDatapieces = savedInstanceState.getParcelableArrayList(DATAPIECES);
+        }
+        if(mDatapieces == null){
+            mDatapieces = new ArrayList();
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(DATAPIECES, mDatapieces);
+        listFragment = createListContentFragment(bundle);
+
+        setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.view_content_container, new ViewOptionsFragment())
+                    .add(R.id.view_content_container, listFragment)
                     .commit();
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(DATAPIECES, mDatapieces);
+    }
+
+    private ListContentFragment createListContentFragment(Bundle bundle) {
+        ListContentFragment listFragment = new ListContentFragment();
+        listFragment.setArguments(bundle);
+        return listFragment;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -54,78 +78,44 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         else if (id == R.id.action_capture){
-            return true;
+            addContent();
         }
         else if (id == R.id.action_view_content){
-            viewContent();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void takePicture(View view){
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = FileHandler.createFile(FileHandler.TYPE_IMAGE);
-            if(photoFile != null) {
-                mCurrentFileUri = Uri.fromFile(photoFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, mCurrentFileUri);
-                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+    public void search(View view){
+        EditText searchBox = (EditText) findViewById(R.id.viewoptions_edittext_search);
+        if(searchBox == null){
+            Log.v(LOG_TAG, "Search box not found");
+        }
+        else {
+            String searchTerm = searchBox.getText().toString();
+            if(searchTerm.equals("")){
+                mDatapieces = DatabaseUtilities.getDatapieces(this, null, null, order);
             }
+            else{
+                Log.v(LOG_TAG, "Search term:" + searchTerm);
+                mDatapieces = DatabaseUtilities.getDatapiecesByTag(this, searchTerm);
+            }
+            listFragment.updateList(mDatapieces);
+        }
+    }
+
+    public void orderByTime(View view){
+        if(order == "ASC"){
+            order = "DESC";
         }
         else{
-            Log.e(LOG_TAG, "Unable to find application to resolve camera activity.");
+            order = "ASC";
         }
+        mDatapieces = DatabaseUtilities.getDatapieces(this, null, null, order);
+        listFragment.updateList(mDatapieces);
     }
 
-    public void takeVideo(View view){
-        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            File videoFile = FileHandler.createFile(FileHandler.TYPE_VIDEO);
-            if(videoFile != null) {
-                mCurrentFileUri = Uri.fromFile(videoFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, mCurrentFileUri);
-                startActivityForResult(intent, REQUEST_VIDEO_CAPTURE);
-            }
-        }
-        else{
-            Log.e(LOG_TAG, "Unable to find application to resolve video activity.");
-        }
-    }
+    private void addContent() {  startActivity(new Intent(this, CaptureActivity.class)); }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == REQUEST_IMAGE_CAPTURE || requestCode == REQUEST_VIDEO_CAPTURE)
-                && resultCode == RESULT_OK) {
-
-            Intent intent = new Intent(this, DetailActivity.class);
-            Datapiece datapiece = new Datapiece(mCurrentFileUri, null, new ArrayList<String>());
-            intent.putExtra(DetailActivity.DATAPIECE, datapiece);
-            startActivity(intent);
-
-            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            mediaScanIntent.setData(mCurrentFileUri);
-            this.sendBroadcast(mediaScanIntent);
-        }
-    }
-
-
-    private void viewContent(){
-        startActivity(new Intent(this, ViewContentActivity.class));
-    }
-
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_capture, container, false);
-            return rootView;
-        }
-    }
 }

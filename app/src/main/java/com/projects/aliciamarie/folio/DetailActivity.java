@@ -16,6 +16,7 @@ import com.projects.aliciamarie.folio.data.Datapiece;
 import com.projects.aliciamarie.folio.utility.FileHandler;
 import com.projects.aliciamarie.folio.utility.LocationProvider;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,7 +47,7 @@ public class DetailActivity extends ActionBarActivity implements LocationProvide
         mLocationProvider = new LocationProvider(this, this);
         loadContent(savedInstanceState);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(DATAPIECE, mDatapiece);
+                      bundle.putParcelable(DATAPIECE, mDatapiece);
         detailFragment = createDetailFragment(bundle);
         setContentView(R.layout.activity_detail);
         if (savedInstanceState == null) {
@@ -139,6 +140,18 @@ public class DetailActivity extends ActionBarActivity implements LocationProvide
         deletedTags.add(tag);
     }
 
+    public void shareContent(View view) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("*/*");
+        String textDescription = String.format("Lat/Lng: %f, %f \nTime: %s\nTags: %s",
+                mDatapiece.getLatitude(), mDatapiece.getLongitude(),
+                (new Timestamp(mDatapiece.getTime())).toString(),
+                mDatapiece.getTags().toString());
+        shareIntent.putExtra(Intent.EXTRA_TEXT, textDescription);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, mDatapiece.getUri());
+        startActivity(Intent.createChooser(shareIntent, "Share content using"));
+    }
+
     public void saveContent(View view) {
         //DatabaseUtilities.deleteDatabase(this);
         long datapieceId = DatabaseUtilities.saveDatapieceValues(this, mDatapiece);
@@ -177,9 +190,9 @@ public class DetailActivity extends ActionBarActivity implements LocationProvide
     }
 
     private void viewContent(){
-        startActivity(new Intent(this, ViewContentActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
     }
 
-    private void addContent() {  startActivity(new Intent(this, MainActivity.class)); }
+    private void addContent() {  startActivity(new Intent(this, CaptureActivity.class)); }
 
 }

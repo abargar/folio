@@ -1,5 +1,12 @@
 <resources>
-    <!--Capture Activity/Front page-->
+
+    <!--Main Activity-->
+    <string name="action_view">View</string>
+    <string name="edittext_search">Search Tags</string>
+    <string name="action_search">Go</string>
+    <string name="action_orderby_time">Order by Time</string>
+
+    <!--Capture Activity-->
     <string name="app_name">Folio</string>
     <string name="welcome">Welcome to your Folio!</string>
     <string name="action_settings">Settings</string>
@@ -14,19 +21,12 @@
     <string name="action_delete_tag">X</string>
     <string name="textview_capture_location_default">Location: Unknown</string>
     <string name="textview_capture_location_accuracy_default">Accuracy:  Unknown</string>
+    <string name="action_share_content">Share</string>
     <string name="action_save_content">Save</string>
     <string name="action_delete_content">Delete</string>
     <string name="delete_file_dialog">Delete file from device?</string>
     <string name="yes_delete_file_dialog">Yes</string>
     <string name="no_delete_file_dialog">No</string>
 
-
-    <!--View Activity-->
-    <string name="action_view">View</string>
-    <string name="edittext_search">Search Terms...</string>
-    <string name="action_search">Go</string>
-    <string name="textview_orderby">Order by:</string>
-    <string name="action_orderby_specimen">Specimen</string>
-    <string name="action_orderby_time">Time</string>
 
 </resources>

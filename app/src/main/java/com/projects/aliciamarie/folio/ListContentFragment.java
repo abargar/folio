@@ -32,7 +32,7 @@ public class ListContentFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_listcontent, container, false);
-        mContentList = getArguments().getParcelableArrayList(ViewContentActivity.DATAPIECES);
+        mContentList = getArguments().getParcelableArrayList(MainActivity.DATAPIECES);
         mContentListAdapter = new DatapieceAdapter(getActivity(), mContentList);
         this.setListAdapter(mContentListAdapter);
 

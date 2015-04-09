@@ -5,20 +5,32 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddContentActivity">
+    tools:context=".DetailActivity">
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/action_share_content"
+        android:text="@string/action_share_content"
+        android:onClick="shareContent"
+        />
+    <Button
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/action_save_content"
         android:text="@string/action_save_content"
         android:onClick="saveContent"
         />
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/action_delete_content"
         android:text="@string/action_delete_content"
         android:onClick="deleteContent"
         />
+    </LinearLayout>
 </LinearLayout>
