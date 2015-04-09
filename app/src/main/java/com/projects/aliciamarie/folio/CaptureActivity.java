@@ -1,40 +1,41 @@
 package com.projects.aliciamarie.folio;
 
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.projects.aliciamarie.folio.data.Datapiece;
 import com.projects.aliciamarie.folio.utility.FileHandler;
+import com.projects.aliciamarie.folio.utility.LocationProvider;
 
 import java.io.File;
-import java.util.ArrayList;
 
 
-public class CaptureActivity extends ActionBarActivity {
+public class CaptureActivity extends ActionBarActivity implements LocationProvider.LocationCallback {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_VIDEO_CAPTURE = 2;
-    Uri mCurrentFileUri;
+    Datapiece mDatapiece;
+    protected LocationProvider mLocationProvider;
     private static String LOG_TAG = CaptureActivity.class.getSimpleName();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDatapiece = new Datapiece(null, null);
+        mLocationProvider = new LocationProvider(this, this);
+        mLocationProvider.disconnect();
         setContentView(R.layout.activity_capture);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
     }
@@ -63,14 +64,42 @@ public class CaptureActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void takePicture(View view){
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (! mLocationProvider.isConnected()) {
+                mLocationProvider.connect();
+        }
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(DetailActivity.DATAPIECE, mDatapiece);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mLocationProvider.isConnected()) {
+                mLocationProvider.disconnect();
+        }
+    }
+
+    public void handleLocation(Location location) {
+        mDatapiece.setLocation(location);
+    }
+
+
+    public void takePicture(View view){
+        mLocationProvider.connect();
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
             File photoFile = FileHandler.createFile(FileHandler.TYPE_IMAGE);
             if(photoFile != null) {
-                mCurrentFileUri = Uri.fromFile(photoFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, mCurrentFileUri);
+                Uri fileUri = Uri.fromFile(photoFile);
+                mDatapiece.setUri(fileUri);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                 startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
             }
         }
@@ -80,12 +109,14 @@ public class CaptureActivity extends ActionBarActivity {
     }
 
     public void takeVideo(View view){
+        mLocationProvider.connect();
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
             File videoFile = FileHandler.createFile(FileHandler.TYPE_VIDEO);
             if(videoFile != null) {
-                mCurrentFileUri = Uri.fromFile(videoFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, mCurrentFileUri);
+                Uri fileUri = Uri.fromFile(videoFile);
+                mDatapiece.setUri(fileUri);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                 startActivityForResult(intent, REQUEST_VIDEO_CAPTURE);
             }
         }
@@ -97,16 +128,21 @@ public class CaptureActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mLocationProvider.connect();
         if ((requestCode == REQUEST_IMAGE_CAPTURE || requestCode == REQUEST_VIDEO_CAPTURE)
                 && resultCode == RESULT_OK) {
 
             Intent intent = new Intent(this, DetailActivity.class);
-            Datapiece datapiece = new Datapiece(mCurrentFileUri, null, new ArrayList<String>());
-            intent.putExtra(DetailActivity.DATAPIECE, datapiece);
+            mLocationProvider.disconnect();
+            if(mDatapiece.getLocation() == null){
+                Log.w(LOG_TAG, "Failed to retrieve location");
+                mDatapiece.setLocation(mLocationProvider.getLastLocation());
+            }
+            intent.putExtra(DetailActivity.DATAPIECE, mDatapiece);
             startActivity(intent);
 
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            mediaScanIntent.setData(mCurrentFileUri);
+            mediaScanIntent.setData(mDatapiece.getUri());
             this.sendBroadcast(mediaScanIntent);
         }
     }
@@ -116,16 +152,4 @@ public class CaptureActivity extends ActionBarActivity {
         startActivity(new Intent(this, MainActivity.class));
     }
 
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_capture, container, false);
-            return rootView;
-        }
-    }
 }

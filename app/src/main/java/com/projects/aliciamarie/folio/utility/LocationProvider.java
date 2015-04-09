@@ -105,4 +105,6 @@ public class LocationProvider implements
         mLocationCallback.handleLocation(location);
     }
 
+    public Location getLastLocation(){ return mLastLocation; }
+
 }
