@@ -32,6 +32,9 @@ public class FileHandler {
         else if(contentStr.endsWith(".mp4")){
             return TYPE_VIDEO;
         }
+        else if(contentStr.endsWith(".mp3")){
+            return TYPE_AUDIO;
+        }
         else{
             return null;
         }
@@ -57,6 +60,9 @@ public class FileHandler {
                 break;
             case TYPE_VIDEO:
                 file = new File(storageDir.getPath() + File.separator + filename + ".mp4");
+                break;
+            case TYPE_AUDIO:
+                file = new File(storageDir.getPath() + File.separator + filename + ".mp3");
                 break;
             default:
                 file = new File(storageDir.getPath() + File.separator + filename + ".txt");
@@ -85,6 +91,14 @@ public class FileHandler {
             }
         }
         else if(type == TYPE_VIDEO){
+            try{
+                thumbnail = ThumbnailUtils.createVideoThumbnail(content.getPath(), MediaStore.Video.Thumbnails.MINI_KIND);
+            }
+            catch(Exception FileNotFoundException) {
+                Log.e(LOG_TAG, "Failed to locate content at uri: " + content.toString());
+            }
+        }
+        else if(type == TYPE_AUDIO){
             try{
                 thumbnail = ThumbnailUtils.createVideoThumbnail(content.getPath(), MediaStore.Video.Thumbnails.MINI_KIND);
             }
