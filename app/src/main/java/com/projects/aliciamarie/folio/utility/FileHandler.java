@@ -99,7 +99,7 @@ public class FileHandler {
             }
         }
         else if(type == TYPE_AUDIO){
-            try{
+            try{ ERROR //Here I'm not sure what api to use for sound thumbnail, lmk if you find out
                 thumbnail = ThumbnailUtils.createVideoThumbnail(content.getPath(), MediaStore.Video.Thumbnails.MINI_KIND);
             }
             catch(Exception FileNotFoundException) {
