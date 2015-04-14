@@ -22,6 +22,7 @@ public class CaptureActivity extends ActionBarActivity implements LocationProvid
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_VIDEO_CAPTURE = 2;
+    private static final int REQUEST_SOUND_CAPTURE = 3;
     Datapiece mDatapiece;
     protected LocationProvider mLocationProvider;
     private static String LOG_TAG = CaptureActivity.class.getSimpleName();
@@ -124,12 +125,29 @@ public class CaptureActivity extends ActionBarActivity implements LocationProvid
             Log.e(LOG_TAG, "Unable to find application to resolve video activity.");
         }
     }
+    
+    public void takeAudio(View view){
+        mLocationProvider.connect();
+        Intent intent = new Intent(MediaStore.RECORD_SOUND);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            File soundFile = FileHandler.createFile(FileHandler.TYPE_AUDIO);
+            if(soundFile != null) {
+                Uri fileUri = Uri.fromFile(soundFile);
+                mDatapiece.setUri(fileUri);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                startActivityForResult(intent, REQUEST_SOUND_CAPTURE);
+            }
+        }
+        else{
+            Log.e(LOG_TAG, "Unable to find application to resolve sound activity.");
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mLocationProvider.connect();
-        if ((requestCode == REQUEST_IMAGE_CAPTURE || requestCode == REQUEST_VIDEO_CAPTURE)
+        if ((requestCode == REQUEST_IMAGE_CAPTURE || requestCode == REQUEST_VIDEO_CAPTURE || requestCode == REQUEST_SOUND_CAPTURE)
                 && resultCode == RESULT_OK) {
 
             Intent intent = new Intent(this, DetailActivity.class);
