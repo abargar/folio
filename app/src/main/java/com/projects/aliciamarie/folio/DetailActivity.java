@@ -38,10 +38,8 @@ public class DetailActivity extends ActionBarActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadContent(savedInstanceState);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(DATAPIECE, mDatapiece);
-        detailFragment = createDetailFragment(bundle);
+        mDatapiece = loadContent(savedInstanceState);
+        detailFragment = createDetailFragment(mDatapiece);
         setContentView(R.layout.activity_detail);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -71,22 +69,26 @@ public class DetailActivity extends ActionBarActivity {
         outState.putParcelable(DATAPIECE, mDatapiece);
     }
 
-    private void loadContent(Bundle savedInstanceState){
+    private Datapiece loadContent(Bundle savedInstanceState){
+        Datapiece datapiece = null;
         if(savedInstanceState != null){
-            mDatapiece = savedInstanceState.getParcelable(DATAPIECE);
+            datapiece = savedInstanceState.getParcelable(DATAPIECE);
         }
         else{
             Intent intent = this.getIntent();
             if(intent != null){
-                mDatapiece = intent.getParcelableExtra(DATAPIECE);
+                datapiece = intent.getParcelableExtra(DATAPIECE);
             }
         }
-        if(mDatapiece == null){
+        if(datapiece == null){
             Log.e(LOG_TAG, "Failed to load content");
         }
+        return datapiece;
     }
 
-    private DetailFragment createDetailFragment(Bundle bundle){
+    private DetailFragment createDetailFragment(Datapiece datapiece){
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(DATAPIECE, datapiece);
         DetailFragment detailFragment = new DetailFragment();
         detailFragment.setArguments(bundle);
         return detailFragment;

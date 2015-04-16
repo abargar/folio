@@ -89,6 +89,7 @@ public class DatabaseUtilities {
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
+        String contentName = DataContract.DatapieceEntry.COLUMN_NAME;
         String contentUri = DataContract.DatapieceEntry.COLUMN_CONTENT_URI;
         String coordLat = DataContract.DatapieceEntry.COLUMN_COORD_LAT;
         String coordLong = DataContract.DatapieceEntry.COLUMN_COORD_LONG;
@@ -96,6 +97,7 @@ public class DatabaseUtilities {
         String timestamp = DataContract.DatapieceEntry.COLUMN_TIMESTAMP;
 
         String[] datapieceProjection = {
+                contentName,
                 contentUri,
                 coordLat,
                 coordLong,
@@ -116,13 +118,14 @@ public class DatabaseUtilities {
                 null
         );
         if(c.moveToFirst()){
+            String name = c.getString(c.getColumnIndexOrThrow(contentName));
             String uriStr = c.getString(c.getColumnIndexOrThrow(contentUri));
             Location location = new Location("");
             location.setLatitude(c.getDouble(c.getColumnIndexOrThrow(coordLat)));
             location.setLongitude(c.getDouble(c.getColumnIndexOrThrow(coordLong)));
             location.setAccuracy(c.getFloat(c.getColumnIndexOrThrow(locAccuracy)));
             location.setTime(c.getLong(c.getColumnIndexOrThrow(timestamp)));
-            datapiece = new Datapiece(Uri.parse(uriStr), location);
+            datapiece = new Datapiece(name, Uri.parse(uriStr), location);
         }
         else{
             datapiece = null;
@@ -154,6 +157,7 @@ public class DatabaseUtilities {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         String contentId = DataContract.DatapieceEntry._ID;
+        String contentName = DataContract.DatapieceEntry.COLUMN_NAME;
         String contentUri = DataContract.DatapieceEntry.COLUMN_CONTENT_URI;
         String coordLat = DataContract.DatapieceEntry.COLUMN_COORD_LAT;
         String coordLong = DataContract.DatapieceEntry.COLUMN_COORD_LONG;
@@ -161,6 +165,7 @@ public class DatabaseUtilities {
         String timestamp = DataContract.DatapieceEntry.COLUMN_TIMESTAMP;
 
         String[] datapieceProjection = {
+                contentName,
                 contentId,
                 contentUri,
                 coordLat,
@@ -168,13 +173,9 @@ public class DatabaseUtilities {
                 locAccuracy,
                 timestamp
         };
-        String sortOrder;
 
         if(order == null){
-            sortOrder = DataContract.DatapieceEntry.COLUMN_TIMESTAMP + " DESC";
-        }
-        else{
-            sortOrder = DataContract.DatapieceEntry.COLUMN_TIMESTAMP + " " + order;
+            order = DataContract.DatapieceEntry.COLUMN_TIMESTAMP + " DESC";
         }
         Cursor c = db.query(
             DataContract.DatapieceEntry.TABLE_NAME,
@@ -183,18 +184,19 @@ public class DatabaseUtilities {
             args,
             null,
             null,
-            sortOrder
+            order
         );
 
         if(c.moveToFirst()) {
             do {
+                String name = c.getString(c.getColumnIndexOrThrow(contentName));
                 String uriStr = c.getString(c.getColumnIndexOrThrow(contentUri));
                 Location location = new Location("");
                 location.setLatitude(c.getDouble(c.getColumnIndexOrThrow(coordLat)));
                 location.setLongitude(c.getDouble(c.getColumnIndexOrThrow(coordLong)));
                 location.setAccuracy(c.getFloat(c.getColumnIndexOrThrow(locAccuracy)));
                 location.setTime(c.getLong(c.getColumnIndexOrThrow(timestamp)));
-                Datapiece datapiece = new Datapiece(Uri.parse(uriStr), location);
+                Datapiece datapiece = new Datapiece(name, Uri.parse(uriStr), location);
                 datapiece.setTags(getTags(context, c.getInt(c.getColumnIndexOrThrow(contentId))));
                 entries.add(datapiece);
             } while(c.moveToNext());

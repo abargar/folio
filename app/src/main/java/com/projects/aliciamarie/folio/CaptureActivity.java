@@ -30,7 +30,7 @@ public class CaptureActivity extends ActionBarActivity implements LocationProvid
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDatapiece = new Datapiece(null, null);
+        mDatapiece = new Datapiece(null, null, null);
         mLocationProvider = new LocationProvider(this, this);
         mLocationProvider.disconnect();
         setContentView(R.layout.activity_capture);

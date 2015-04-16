@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/view_content_container"
+    android:id="@+id/activity_main"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
     <FrameLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fragment_view_options"
-        android:layout_marginBottom="2dp"
-        tools:context=".MainActivity$ViewOptionsFragment"
-        />
+        android:id="@+id/options_container"
+        android:layout_marginBottom="2dp" />
 
     <FrameLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fragment_list_content"
-        tools:context=".MainActivity$ListContentFragment"
-        />
+        android:id="@+id/content_container" />
 
 </LinearLayout>

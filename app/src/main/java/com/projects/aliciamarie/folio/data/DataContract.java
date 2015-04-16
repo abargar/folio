@@ -14,6 +14,8 @@ public class DataContract {
         //URI represented as ... text?
         public static final String COLUMN_CONTENT_URI = "content_uri";
 
+        //name
+        public static final String COLUMN_NAME = "name";
         //timestamp
         public static final String COLUMN_TIMESTAMP = "time";
         //long representing latitude in degrees

@@ -24,10 +24,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_DATAPIECE_TABLE = "CREATE TABLE " + DatapieceEntry.TABLE_NAME +  " (" +
             DatapieceEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             DatapieceEntry.COLUMN_CONTENT_URI + " URI NOT NULL, " +
-            DatapieceEntry.COLUMN_TIMESTAMP + " LONG NOT NULL, " +
-            DatapieceEntry.COLUMN_COORD_LAT + " LONG NOT NULL, " +
-            DatapieceEntry.COLUMN_COORD_LONG + " LONG NOT NULL, " +
-            DatapieceEntry.COLUMN_COORD_ACC + " FLOAT NOT NULL, " +
+            DatapieceEntry.COLUMN_NAME + " TEXT, " +
+            DatapieceEntry.COLUMN_TIMESTAMP + " LONG, " +
+            DatapieceEntry.COLUMN_COORD_LAT + " LONG, " +
+            DatapieceEntry.COLUMN_COORD_LONG + " LONG, " +
+            DatapieceEntry.COLUMN_COORD_ACC + " FLOAT, " +
             DatapieceEntry.COLUMN_CONTENT_DESCR + " TEXT, " +
             " UNIQUE (" + DatapieceEntry.COLUMN_CONTENT_URI + ", " +
             DatapieceEntry.COLUMN_TIMESTAMP + ") ON CONFLICT REPLACE" +

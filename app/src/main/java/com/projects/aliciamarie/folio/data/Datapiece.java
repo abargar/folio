@@ -13,26 +13,33 @@ import java.util.ArrayList;
  */
 public class Datapiece implements Parcelable {
     protected static final String URI_ARG = "CONTENT_URI";
+    protected static final String NAME_ARG = "CONTENT_NAME";
     protected static final String LOCATION_ARG = "CONTENT_LOCATION";
     protected static final String TAGS_ARG = "CONTENT_TAGS";
 
     private Uri uri;
+    private String name = "";
     private Location location = new Location("");
     private ArrayList<String> tags = new ArrayList();
 
-
-    public Datapiece(Uri u, Location loc){
+    public Datapiece(String name, Uri u, Location loc){
         this.uri = u;
         this.location = loc;
+        this.name = name;
     }
 
-    public Datapiece(Uri u, Location loc, ArrayList<String> tags){
+    public Datapiece(Uri u, Location loc, String name, ArrayList<String> tags){
         this.uri = u;
         this.location = loc;
+        this.name = name;
         this.tags = tags;
     }
 
     public String toString() { return this.uri.toString() + " : " + this.tags.toString();}
+
+    public String getName(){ return this.name; }
+
+    public void setName(String name){this.name = name; }
 
     public Uri getUri() {
         return this.uri;
@@ -95,6 +102,7 @@ public class Datapiece implements Parcelable {
         Bundle bundle = new Bundle();
         bundle.putParcelable(URI_ARG, this.uri);
         bundle.putParcelable(LOCATION_ARG, this.location);
+        bundle.putString(NAME_ARG, this.name);
         bundle.putStringArrayList(TAGS_ARG, this.tags);
         dest.writeBundle(bundle);
     }
@@ -106,8 +114,9 @@ public class Datapiece implements Parcelable {
             Bundle bundle = source.readBundle();
             Uri uri = bundle.getParcelable(URI_ARG);
             Location location = bundle.getParcelable(LOCATION_ARG);
+            String name = bundle.getString(NAME_ARG);
             ArrayList<String> tags = bundle.getStringArrayList(TAGS_ARG);
-            return new Datapiece(uri,location,tags);
+            return new Datapiece(uri,location,name,tags);
         }
 
         @Override

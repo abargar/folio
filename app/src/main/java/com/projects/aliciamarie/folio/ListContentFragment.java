@@ -1,6 +1,6 @@
 package com.projects.aliciamarie.folio;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
@@ -23,6 +23,35 @@ public class ListContentFragment extends ListFragment {
     private static final String LOG_TAG = ListContentFragment.class.getSimpleName();
     protected ArrayList<Datapiece> mContentList = new ArrayList<>();
     protected DatapieceAdapter mContentListAdapter;
+    onDatapieceSelectedListener mCallback;
+
+
+
+    public static ListContentFragment newInstance(ArrayList<Datapiece> datapieces) {
+        ListContentFragment fragment = new ListContentFragment();
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(MainActivity.DATAPIECES, datapieces);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public ListContentFragment(){}
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+       try {
+            mCallback = (onDatapieceSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnDatapieceSelectedListener");
+        }
+    }
+
+    public void onDetach() {
+        super.onDetach();
+        mCallback = null;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,11 +71,8 @@ public class ListContentFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Log.v(LOG_TAG, "What is mContentListAdapter? " + mContentListAdapter);
         Datapiece datapiece = mContentListAdapter.getItem(position);
-        Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra(DetailActivity.DATAPIECE, datapiece);
-        startActivity(intent);
+        mCallback.onDatapieceSelected(datapiece);
     }
 
     protected void updateList(ArrayList<Datapiece> datapieces){
@@ -58,5 +84,9 @@ public class ListContentFragment extends ListFragment {
             this.setListAdapter(mContentListAdapter);
         }
         mContentListAdapter.notifyDataSetChanged();
+    }
+
+    public interface onDatapieceSelectedListener {
+        public void onDatapieceSelected(Datapiece datapiece);
     }
 }

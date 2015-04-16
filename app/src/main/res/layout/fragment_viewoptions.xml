@@ -14,14 +14,18 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/viewoptions_button_search"
-        android:text="@string/action_search"
-        android:onClick="search"/>
+        android:text="@string/action_search"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/viewoptions_button_orderby_time"
-        android:text="@string/action_orderby_time"
-        android:onClick="orderByTime"/>
+        android:text="@string/action_orderby_time"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/viewoptions_button_map"
+        android:text="@string/action_map"/>
 
 </LinearLayout>
