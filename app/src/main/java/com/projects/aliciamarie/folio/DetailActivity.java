@@ -50,14 +50,13 @@ public class DetailActivity extends ActionBarActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        else if (id == R.id.action_capture){
+        if (id == R.id.action_capture){
             addContent();
         }
         else if (id == R.id.action_view_content){
+            viewContent();
+        }
+        else if (id == R.id.action_map){
             viewContent();
         }
         return super.onOptionsItemSelected(item);
@@ -94,6 +93,9 @@ public class DetailActivity extends ActionBarActivity {
         return detailFragment;
     }
 
+    public void setDatapieceName(String name){ mDatapiece.setName(name);
+    Log.v(LOG_TAG, "datapiece name: " + name);}
+
     public void addTag(String tag){
         mDatapiece.addTag(tag);
     }
@@ -116,7 +118,6 @@ public class DetailActivity extends ActionBarActivity {
     }
 
     public void saveContent(View view) {
-        //DatabaseUtilities.deleteDatabase(this);
         long datapieceId = DatabaseUtilities.saveDatapieceValues(this, mDatapiece);
         for (String deletedTag : deletedTags) {
                 DatabaseUtilities.deleteDatapieceTag(this, datapieceId, deletedTag);
@@ -133,23 +134,21 @@ public class DetailActivity extends ActionBarActivity {
             DatabaseUtilities.deleteDatapiece(this, datapieceId);
         }
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setMessage(R.string.delete_file_dialog)
-                    .setPositiveButton(R.string.yes_delete_file_dialog, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    Log.v(LOG_TAG, "Yes delete file");
-                    FileHandler.deleteFile(getApplicationContext(), mDatapiece.getUri());
-                    viewContent();
-                }
-            })
-                    .setNegativeButton(R.string.no_delete_file_dialog, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Log.v(LOG_TAG, "No keep file");
-                            viewContent();
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage(R.string.delete_file_dialog)
+                .setPositiveButton(R.string.yes_delete_file_dialog, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        FileHandler.deleteFile(getApplicationContext(), mDatapiece.getUri());
+                        viewContent();
                         }
-                    });
-           alertDialogBuilder.create();
-            alertDialogBuilder.show();
+                })
+                .setNegativeButton(R.string.no_delete_file_dialog, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        viewContent();
+                    }
+                });
+       alertDialogBuilder.create();
+       alertDialogBuilder.show();
     }
 
     private void viewContent(){

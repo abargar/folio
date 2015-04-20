@@ -6,42 +6,54 @@
     >
 
     <ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="2dp"
         android:id="@+id/list_item_content_icon"/>
 
     <TextView
-        android:id="@+id/list_item_content_tags"
+        android:id="@+id/list_item_content_name"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:layout_toRightOf="@+id/list_item_content_icon"
         android:layout_alignTop="@+id/list_item_content_icon"
-        android:text="[Tag1, Tag2]"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        android:layout_toRightOf="@+id/list_item_content_icon"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        />
+
+    <TextView
+        android:id="@+id/list_item_content_time"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_toRightOf="@+id/list_item_content_name"
+        android:layout_alignTop="@+id/list_item_content_icon"
+        android:layout_gravity="right"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_toRightOf="@+id/list_item_content_icon"
         android:layout_alignBottom="@+id/list_item_content_icon"
-        android:layout_below="@+id/list_item_content_tags"
-        android:id="@+id/list_item_content_type"
-        android:text="Type"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_toRightOf="@+id/list_item_content_type"
-        android:layout_alignBottom="@+id/list_item_content_icon"
-        android:layout_below="@+id/list_item_content_tags"
-        android:id="@+id/list_item_content_time"
+        android:layout_below="@+id/list_item_content_name"
+        android:id="@+id/list_item_content_tags"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:text="Time"
+        android:text="Tags"
         android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/list_item_content_tags"
+        android:layout_alignBottom="@+id/list_item_content_icon"
+        android:layout_below="@+id/list_item_content_time"
+        android:layout_gravity="right"
+        android:id="@+id/list_item_content_type"
+        android:text="Type"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
 </RelativeLayout>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -10,22 +11,15 @@
         android:id="@+id/viewoptions_edittext_search"
         android:hint="@string/edittext_search"/>
 
+    <Spinner
+        android:id="@+id/spinner_search"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/viewoptions_button_search"
+        android:id="@+id/button_search"
         android:text="@string/action_search"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id="@+id/viewoptions_button_orderby_time"
-        android:text="@string/action_orderby_time"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id="@+id/viewoptions_button_map"
-        android:text="@string/action_map"/>
 
 </LinearLayout>

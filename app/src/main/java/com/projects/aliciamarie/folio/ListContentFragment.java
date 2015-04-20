@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.projects.aliciamarie.folio.data.Datapiece;
@@ -21,11 +21,14 @@ import java.util.ArrayList;
 public class ListContentFragment extends ListFragment {
 
     private static final String LOG_TAG = ListContentFragment.class.getSimpleName();
+    protected Button orderByTimeBtn;
+    protected Button orderByNameBtn;
     protected ArrayList<Datapiece> mContentList = new ArrayList<>();
     protected DatapieceAdapter mContentListAdapter;
-    onDatapieceSelectedListener mCallback;
+    private onDatapieceSelectedListener mCallback;
 
-
+    private boolean timeAscending = true;
+    private boolean nameAscending = false;
 
     public static ListContentFragment newInstance(ArrayList<Datapiece> datapieces) {
         ListContentFragment fragment = new ListContentFragment();
@@ -64,7 +67,20 @@ public class ListContentFragment extends ListFragment {
         mContentList = getArguments().getParcelableArrayList(MainActivity.DATAPIECES);
         mContentListAdapter = new DatapieceAdapter(getActivity(), mContentList);
         this.setListAdapter(mContentListAdapter);
-
+        orderByTimeBtn = (Button) rootView.findViewById(R.id.action_orderby_time);
+        orderByTimeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                orderByTime();
+            }
+        });
+        orderByNameBtn = (Button) rootView.findViewById(R.id.action_orderby_name);
+        orderByNameBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                orderByName();
+            }
+        });
         return rootView;
     }
 
@@ -75,11 +91,20 @@ public class ListContentFragment extends ListFragment {
         mCallback.onDatapieceSelected(datapiece);
     }
 
-    protected void updateList(ArrayList<Datapiece> datapieces){
+    public void orderByTime() {
+        timeAscending  = ! timeAscending;
+        mContentListAdapter.sortByTime(timeAscending);
+    }
+
+    public void orderByName(){
+        nameAscending = ! nameAscending;
+        mContentListAdapter.sortByName(nameAscending);
+    }
+
+    protected void updateContent(ArrayList<Datapiece> datapieces){
         mContentList.clear();
         mContentList.addAll(datapieces);
         if(mContentListAdapter == null){
-            Log.v(LOG_TAG, "mContentListAdapter is null");
             mContentListAdapter = new DatapieceAdapter(getActivity(), mContentList);
             this.setListAdapter(mContentListAdapter);
         }

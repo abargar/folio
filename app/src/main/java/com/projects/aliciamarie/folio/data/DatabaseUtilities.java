@@ -19,12 +19,13 @@ public class DatabaseUtilities {
     private static final String LOG_TAG = DatabaseUtilities.class.getSimpleName();
 
     public static void deleteDatabase(Context context) {
-        context.deleteDatabase(DatabaseHelper.DATABASE_NAME);
+        //context.deleteDatabase(DatabaseHelper.DATABASE_NAME);
     }
 
     static ContentValues createDatapieceValues(Datapiece datapiece) {
 
         ContentValues datapieceValues = new ContentValues();
+        datapieceValues.put(DataContract.DatapieceEntry.COLUMN_NAME, datapiece.getName());
         datapieceValues.put(DataContract.DatapieceEntry.COLUMN_CONTENT_URI, datapiece.getUri().toString());
         datapieceValues.put(DataContract.DatapieceEntry.COLUMN_COORD_LAT, datapiece.getLatitude());
         datapieceValues.put(DataContract.DatapieceEntry.COLUMN_COORD_LONG, datapiece.getLongitude());
@@ -118,6 +119,7 @@ public class DatabaseUtilities {
                 null
         );
         if(c.moveToFirst()){
+            Log.v(LOG_TAG, "Found a datapiece");
             String name = c.getString(c.getColumnIndexOrThrow(contentName));
             String uriStr = c.getString(c.getColumnIndexOrThrow(contentUri));
             Location location = new Location("");
@@ -128,6 +130,7 @@ public class DatabaseUtilities {
             datapiece = new Datapiece(name, Uri.parse(uriStr), location);
         }
         else{
+            Log.v(LOG_TAG, "No datapiece found");
             datapiece = null;
         }
         db.close();
@@ -270,7 +273,7 @@ public class DatabaseUtilities {
         String[] tagProjection = {
                 idCol
         };
-        String selection= DataContract.SpecimenDatapiecePairing.COLUMN_DATAPIECE_ID + " = ? AND "
+        String selection = DataContract.SpecimenDatapiecePairing.COLUMN_DATAPIECE_ID + " = ? AND "
                 + DataContract.SpecimenDatapiecePairing.COLUMN_SPECIMEN_ID + " = ?";
         String[] selectionArgs = { String.valueOf(datapieceId), String.valueOf(tag) };
 
@@ -283,7 +286,6 @@ public class DatabaseUtilities {
                 null,
                 null
         );
-        Log.v(LOG_TAG, "Number of returned rows for tag " + tag + ": " + cursor.getCount());
 
         long tagId;
         if(cursor.moveToFirst()){
@@ -332,9 +334,10 @@ public class DatabaseUtilities {
         if(cursor.moveToFirst()){
             do{
                Long datapieceId = cursor.getLong(cursor.getColumnIndexOrThrow(datapieceCol));
+               Log.v(LOG_TAG, "Datapiece id: " + datapieceId);
                Datapiece datapiece = getDatapiece(context, datapieceId);
-                datapiece.setTags(getTags(context, datapieceId));
-                datapieces.add(datapiece);
+               datapiece.setTags(getTags(context, datapieceId));
+               datapieces.add(datapiece);
             }
             while(cursor.moveToNext());
         }

@@ -19,13 +19,13 @@ import java.util.ArrayList;
  */
 public class MainActivity extends ActionBarActivity
                           implements ListContentFragment.onDatapieceSelectedListener,
-                                     ListOptionsFragment.ViewOptionsListener {
-
+        SearchFragment.SearchListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     protected static final String DATAPIECES = "datapieces";
     protected ArrayList<Datapiece> mDatapieces;
     protected ListContentFragment listFragment;
+    protected MapContentFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class MainActivity extends ActionBarActivity
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.options_container, new ListOptionsFragment())
+                    .add(R.id.options_container, new SearchFragment())
                     .add(R.id.content_container, listFragment)
                     .commit();
         }
@@ -63,45 +63,62 @@ public class MainActivity extends ActionBarActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_map) {
+            viewMap();
         }
         else if (id == R.id.action_capture){
             addContent();
         }
         else if (id == R.id.action_view_content){
-            return true;
+            viewList();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    public void search(String searchTerm){
-            mDatapieces = DatabaseUtilities.getDatapiecesByTag(this, searchTerm);
-            if(listFragment != null) {
-                listFragment.updateList(mDatapieces);
+    public void search(String searchCategory, String searchTerm){
+        if(searchTerm.equals("")){
+            mDatapieces = DatabaseUtilities.getDatapieces(this, null, null, null);
+        }
+        else{
+            if(searchCategory.equals("Tag")){
+                mDatapieces = DatabaseUtilities.getDatapiecesByTag(this, searchTerm);
             }
+            else if(searchCategory.equals("Name")){
+                searchCategory = DataContract.DatapieceEntry.COLUMN_NAME;
+                String[] searchArg = { searchTerm + "%" };
+                mDatapieces = DatabaseUtilities.getDatapieces(this, searchCategory + " LIKE ?", searchArg, null );
+            }
+        }
+        if(listFragment != null) {
+            listFragment.updateContent(mDatapieces);
+        }
+        if(mapFragment != null){
+            mapFragment.updateContent(mDatapieces);
+        }
+    }
+
+    public void viewList() {
+        if(listFragment == null){
+            listFragment = ListContentFragment.newInstance(mDatapieces);
+        }
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.replace(R.id.content_container, listFragment, "list");
+        transaction.addToBackStack(null);
+
+        transaction.commit();
     }
 
     public void viewMap(){
-        MapContentFragment mapFragment = MapContentFragment.newInstance(mDatapieces);
+        if(mapFragment == null){
+            mapFragment = MapContentFragment.newInstance(mDatapieces);
+        }
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         transaction.replace(R.id.content_container, mapFragment, "map");
         transaction.addToBackStack(null);
 
         transaction.commit();
-    }
-
-    public void orderByTime(Boolean newestFirst){
-        String orderByTime = DataContract.DatapieceEntry.COLUMN_TIMESTAMP + " ";
-        if(newestFirst){
-            mDatapieces = DatabaseUtilities.getDatapieces(this, null, null, orderByTime + "DESC");
-        }
-        else{
-            mDatapieces = DatabaseUtilities.getDatapieces(this, null, null, orderByTime + "ASC");
-        }
-        listFragment.updateList(mDatapieces);
     }
 
     public void onDatapieceSelected(Datapiece datapiece) {

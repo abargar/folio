@@ -18,6 +18,14 @@
         android:id="@+id/imageview_capture"
         />
 
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edittext_capture_name"
+        android:hint="@string/edittext_name"
+        />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true"
-        android:id="@+id/content_tags"
+        android:id="@+id/detail_tags"
         android:layout_gravity="center_horizontal|top" />
 
 </LinearLayout>

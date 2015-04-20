@@ -1,11 +1,13 @@
 package com.projects.aliciamarie.folio;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +36,7 @@ public class DetailFragment extends Fragment{
     protected TagAdapter mTagAdapter;
     protected EditText addTagText;
     protected Button addTagBtn;
-
+    protected EditText editNameText;
 
     public DetailFragment() {
     }
@@ -60,7 +62,7 @@ public class DetailFragment extends Fragment{
         if(location != null){
             handleLocation(location);
         }
-        ListView listView = (ListView) rootView.findViewById(R.id.content_tags);
+        ListView listView = (ListView) rootView.findViewById(R.id.detail_tags);
 
         mTagAdapter = new TagAdapter(getActivity(), datapiece.getTags());
         listView.setAdapter(mTagAdapter);
@@ -78,6 +80,29 @@ public class DetailFragment extends Fragment{
                         }
                     }
                 });
+        editNameText = (EditText) rootView.findViewById(R.id.edittext_capture_name);
+        if(editNameText != null && datapiece.getName() != null){
+            editNameText.setText(datapiece.getName());
+        }
+        editNameText.addTextChangedListener(new TextWatcher(){
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            public void afterTextChanged(Editable s){
+                String name = s.toString();
+                Activity parentActivity = getActivity();
+                if(parentActivity instanceof DetailActivity){
+                    ((DetailActivity) parentActivity).setDatapieceName(name);
+                }
+            }
+        });
 
         return rootView;
     }

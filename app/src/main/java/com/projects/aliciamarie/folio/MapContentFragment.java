@@ -1,12 +1,16 @@
 package com.projects.aliciamarie.folio;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -29,7 +33,7 @@ public class MapContentFragment extends Fragment
     private GoogleMap mMap;
     private ArrayList<Marker> mMarkers = new ArrayList();
 
-    // TODO: Rename and change types and number of parameters
+
     public static MapContentFragment newInstance(ArrayList<Datapiece> datapieces) {
         MapContentFragment fragment = new MapContentFragment();
         Bundle args = new Bundle();
@@ -64,9 +68,9 @@ public class MapContentFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-/*        if (mMap == null) {
+        if (mMap == null) {
             mFragment.getMapAsync(this);
-        }*/
+        }
     }
 
     @Override
@@ -77,31 +81,49 @@ public class MapContentFragment extends Fragment
         }
     }
 
+    public void updateContent(ArrayList<Datapiece> datapieces){
+        mDatapieces = datapieces;
+        mMarkers = new ArrayList();
+        mFragment.getMapAsync(this);
+    }
+
 
     private void setUpMap() {
         mMap.clear();
-        LatLngBounds.Builder llBuilder = new LatLngBounds.Builder();
-
-        for(Datapiece datapiece: mDatapieces){
-            LatLng ll = new LatLng(datapiece.getLatitude(), datapiece.getLongitude());
-            llBuilder.include(ll);
-            BitmapDescriptor marker;
-            switch( FileHandler.getType(datapiece.getUri()) ) {
-                case FileHandler.TYPE_IMAGE:
-                    marker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-                    break;
-                case FileHandler.TYPE_VIDEO:
-                    marker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
-                    break;
-                case FileHandler.TYPE_AUDIO:
-                    marker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-                    break;
-                default:
-                    marker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
-                    break;
+        if (mDatapieces.size() > 0) {
+            LatLngBounds.Builder llBuilder = new LatLngBounds.Builder();
+            for (Datapiece datapiece : mDatapieces) {
+                LatLng ll = new LatLng(datapiece.getLatitude(), datapiece.getLongitude());
+                llBuilder.include(ll);
+                BitmapDescriptor marker;
+                switch (FileHandler.getType(datapiece.getUri())) {
+                    case FileHandler.TYPE_IMAGE:
+                        marker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                        break;
+                    case FileHandler.TYPE_VIDEO:
+                        marker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+                        break;
+                    case FileHandler.TYPE_AUDIO:
+                        marker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                        break;
+                    default:
+                        marker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
+                        break;
+                }
+                mMarkers.add(mMap.addMarker(new MarkerOptions().position(ll).title(datapiece.getTags().toString())
+                        .snippet(datapiece.toString()).icon(marker)));
             }
-            mMarkers.add(mMap.addMarker(new MarkerOptions().position(ll).title(datapiece.getTags().toString())
-                    .snippet(datapiece.toString()).icon(marker)));
+            LatLngBounds bounds = llBuilder.build();
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 20);
+            mMap.animateCamera(cu);
+        }
+        else{
+            Context context = getActivity();
+            CharSequence noContentFoundMsg = "No content found.";
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(context, noContentFoundMsg, duration);
+            toast.show();
         }
     }
 }
