@@ -1,2 +1,2 @@
 # folio
-CS6535 project
+CS6535 project - Android application
