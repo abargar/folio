@@ -19,6 +19,6 @@ It's broken down into three main parts:
 ###3. Detailing and sharing data:
   Files can be given custom names or tags.  From the details page, you can choose to share the file in a number of different ways, including email, Google Drive, Facebook, or Evernote.
 
-###ome pictures:
+###Some pictures:
 
- ![List View](/../../blob/screenshots/screnshots/listview.png?raw=true "List View") 
+ ![List View](/../../screenshots/screenshots/listview.png?raw=true "List View") 
