@@ -21,4 +21,4 @@ It's broken down into three main parts:
 
 ###Some pictures:
 
- ![List View](/../../screenshots/screenshots/listview.png?raw=true "List View") 
+ ![List View](/../../blob/screenshots/screenshots/listview.png?raw=true "List View") 
