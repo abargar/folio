@@ -6,10 +6,10 @@ It's broken down into three main parts:
 
 1. Capturing data:
   This app syncs up with other applications on the device to collect the following multimedia files:
-	*Images
-	*Video
-	*Audio
-	*Textfiles
+	* Images
+	* Video
+	* Audio
+	* Text
 
   Each file is timestamped and geo-located at time of capture.
 
