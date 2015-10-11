@@ -26,6 +26,7 @@ public class FileHandler {
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_VIDEO = "video";
     public static final String TYPE_AUDIO = "audio";
+    public static final String TYPE_DOCUMENT = "document";
     public static final String TYPE_UNKNOWN = "unknown";
 
     public static String getType(Uri content){
@@ -54,10 +55,13 @@ public class FileHandler {
                 storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_DIRECTORY);
                 break;
             case TYPE_VIDEO:
-                storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_DIRECTORY);
+                storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), APP_DIRECTORY);
                 break;
             case TYPE_AUDIO:
-                storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), APP_DIRECTORY);
+                storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS), APP_DIRECTORY);
+                break;
+            case TYPE_DOCUMENT:
+                storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), APP_DIRECTORY);
                 break;
             default:
                 storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_DIRECTORY);
@@ -80,6 +84,8 @@ public class FileHandler {
             case TYPE_AUDIO:
                 file = new File(storageDir.getPath() + File.separator + filename + ".mp3");
                 break;
+            case TYPE_DOCUMENT:
+                file = new File(storageDir.getPath() + File.separator + filename + ".doc");
             default:
                 file = new File(storageDir.getPath() + File.separator + filename + ".txt");
                 break;

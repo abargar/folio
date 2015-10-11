@@ -61,8 +61,8 @@ public class SearchFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                Log.v(LOG_TAG, "Search function called");
                 String searchTerm = searchBox.getText().toString();
-//                Log.v(LOG_TAG, "Search term: " + searchTerm);
                 mCallback.search(searchCategory, searchTerm);
             }
         });
@@ -78,7 +78,6 @@ public class SearchFragment extends Fragment {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             searchCategory = searchSpinner.getSelectedItem().toString();
-            Log.v(LOG_TAG, "Selected category: " + searchCategory);
         }
 
         @Override

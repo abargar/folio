@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,8 +16,14 @@ import com.projects.aliciamarie.folio.data.Datapiece;
 import java.util.ArrayList;
 
 /**
+ * MainActivity:  Class that handles logic for list, search, and map functionality.
+ * More specifically: loads search, list, and map fragments; selecting an object in the list (used to start the DetailActivity for showing content);
+ *  and performing search on the database and updating shown content.
+ *
  * Created by Alicia Marie on 3/24/2015.
+ *
  */
+
 public class MainActivity extends ActionBarActivity
                           implements ListContentFragment.onDatapieceSelectedListener,
         SearchFragment.SearchListener {
@@ -76,6 +83,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void search(String searchCategory, String searchTerm){
+        Log.v(LOG_TAG, "Search callback received");
         if(searchTerm.equals("")){
             mDatapieces = DatabaseUtilities.getDatapieces(this, null, null, null);
         }

@@ -110,7 +110,7 @@ public class DatapieceAdapter extends BaseAdapter {
             holder.icon.setImageBitmap(FileHandler.getThumbnail(mContext, datapieceUri));
             holder.name.setText(datapiece.getName());
             holder.tags.setText(datapiece.getTags().toString());
-            holder.type.setText(FileHandler.getType(datapieceUri));
+            //holder.type.setText(FileHandler.getType(datapieceUri));
             Timestamp datapieceTime = new Timestamp(datapiece.getTime());
             holder.time.setText(String.format("%1$TT, %1$TD",datapieceTime));
         }

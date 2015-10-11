@@ -18,7 +18,12 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
+/**Detail Activity:  handles logic for showing a datapiece's detailed content, displayed either immediately after capture or upon selection
+ * in the list.
+ *
+ * Specific functions:  shares, saves, and deletes content (the later with or without deleting the source file).  Handles the addition or
+ * removal of tags as a callback from the display.  Loads and displays the content detail.
+ *
  * Created by Alicia Marie on 2/12/2015.
  */
 
@@ -93,8 +98,7 @@ public class DetailActivity extends ActionBarActivity {
         return detailFragment;
     }
 
-    public void setDatapieceName(String name){ mDatapiece.setName(name);
-    Log.v(LOG_TAG, "datapiece name: " + name);}
+    public void setDatapieceName(String name){ mDatapiece.setName(name);}
 
     public void addTag(String tag){
         mDatapiece.addTag(tag);

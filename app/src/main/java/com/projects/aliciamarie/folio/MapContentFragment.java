@@ -110,8 +110,8 @@ public class MapContentFragment extends Fragment
                         marker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
                         break;
                 }
-                mMarkers.add(mMap.addMarker(new MarkerOptions().position(ll).title(datapiece.getTags().toString())
-                        .snippet(datapiece.toString()).icon(marker)));
+                mMarkers.add(mMap.addMarker(new MarkerOptions().position(ll).title(datapiece.getName())
+                        .snippet(datapiece.getTags().toString() + "\nType: " + FileHandler.getType(datapiece.getUri())).icon(marker)));
             }
             LatLngBounds bounds = llBuilder.build();
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 20);

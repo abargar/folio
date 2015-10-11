@@ -1,11 +1,11 @@
 package com.projects.aliciamarie.folio;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,12 +17,23 @@ import com.projects.aliciamarie.folio.utility.LocationProvider;
 
 import java.io.File;
 
+/*
+*Capture Activity:  handles the capture and addition of all new data.  Opens a dialog with options for various data types.  Based on user selection,
+* calls FileHandler for new file of appropriate type and starts relevant application (if exists).  Upon application completion, moves to detail view.
+*
+* Specific functions:  handles geotagging (via utility/LocationProvider); file creation (via utility/FileHandler);
+ * starting camera, videorecorder, audiorecorder, or writer applications; signalling creation of file to other relevant applications (via android's MediaScanner);
+ * and passing off new content to the remainder of the folio application.
+*
+*Created by Alicia Bargar, date lost
+ */
 
-public class CaptureActivity extends ActionBarActivity implements LocationProvider.LocationCallback {
+public class CaptureActivity extends Activity implements LocationProvider.LocationCallback {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_VIDEO_CAPTURE = 2;
     private static final int REQUEST_AUDIO_CAPTURE = 3;
+    private static final int REQUEST_DOCUMENT_CAPTURE = 4;
     Datapiece mDatapiece;
     protected LocationProvider mLocationProvider;
     private static String LOG_TAG = CaptureActivity.class.getSimpleName();
@@ -35,10 +46,6 @@ public class CaptureActivity extends ActionBarActivity implements LocationProvid
         mLocationProvider = new LocationProvider(this, this);
         mLocationProvider.disconnect();
         setContentView(R.layout.activity_capture);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .commit();
-        }
     }
 
 
@@ -143,11 +150,30 @@ public class CaptureActivity extends ActionBarActivity implements LocationProvid
         }
     }
 
+    public void takeDocument(View view){
+        mLocationProvider.connect();
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            File docFile = FileHandler.createFile(FileHandler.TYPE_DOCUMENT);
+            if(docFile != null) {
+                Uri fileUri = Uri.fromFile(docFile);
+                mDatapiece.setUri(fileUri);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                startActivityForResult(intent, REQUEST_DOCUMENT_CAPTURE);
+            }
+        }
+        else{
+            Log.e(LOG_TAG, "Unable to find application to resolve document activity.");
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mLocationProvider.connect();
-        if ((requestCode == REQUEST_IMAGE_CAPTURE || requestCode == REQUEST_VIDEO_CAPTURE || requestCode == REQUEST_AUDIO_CAPTURE)
+        if ((requestCode == REQUEST_IMAGE_CAPTURE || requestCode == REQUEST_VIDEO_CAPTURE ||
+                requestCode == REQUEST_AUDIO_CAPTURE || requestCode == REQUEST_DOCUMENT_CAPTURE)
                 && resultCode == RESULT_OK) {
 
             Intent intent = new Intent(this, DetailActivity.class);

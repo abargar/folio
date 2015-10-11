@@ -17,10 +17,16 @@
     <string name="action_orderby_name">Order by Name</string>
 
     <!--Capture Activity-->
-    <string name="action_capture">+</string>
+    <string-array name="add_content">
+        <item>Camera</item>
+        <item>Video</item>
+        <item>Audio</item>
+    </string-array>
+    <string name="action_capture">New</string>
     <string name="action_camera">Camera</string>
     <string name="action_video">Video</string>
     <string name="action_audio">Audio</string>
+    <string name="action_document">Document</string>
 
     <!--Detail Activity-->
     <string name="edittext_name">Name</string>
