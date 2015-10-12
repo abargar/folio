@@ -21,4 +21,4 @@ It's broken down into three main parts:
 
 ###Some pictures:
 
- ![List View](/../../blob/screenshots/screenshots/listview.png?raw=true "List View") 
+ <img src="/../../blob/screenshots/screenshots/listview.png?raw=true" width="100"> 
