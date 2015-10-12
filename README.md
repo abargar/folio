@@ -21,4 +21,5 @@ It's broken down into three main parts:
 
 ###Some pictures:
 
- <img src="/../../blob/screenshots/screenshots/listview.png?raw=true" width="100"> 
+ <img src="/../../blob/screenshots/screenshots/listview.png?raw=true" width="200" />
+ <img src="/../../blob/screenshots/screenshots/mapview.png?raw=true" width="200" /> 
